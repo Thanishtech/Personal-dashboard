@@ -1,4 +1,472 @@
 <!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thanish | Personal Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-sub: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --success: #10b981;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+    }
+
+    [data-theme="light"] {
+      --bg: #f1f5f9;
+      --card-bg: #ffffff;
+      --card-sub: #f8fafc;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --accent: #4f46e5;
+      --accent-hover: #4338ca;
+      --success: #059669;
+      --border: rgba(0, 0, 0, 0.08);
+      --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px 16px 90px 16px;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Header Banner */
+    .header-card {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: #ffffff;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-info h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-info p {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .theme-toggle-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      font-size: 1.2rem;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    /* List Items */
+    .item-row {
+      background-color: var(--card-sub);
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    .item-row:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Interactive To-Do */
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      background-color: var(--card-sub);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    button.primary-btn {
+      background-color: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .todo-item.done span {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .todo-item input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 18px;
+      height: 18px;
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* Progress & Goals */
+    .progress-bar-bg {
+      background: var(--card-sub);
+      height: 10px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 8px 0 14px 0;
+    }
+
+    .progress-bar-fill {
+      background: linear-gradient(90deg, var(--accent), var(--success));
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Notes Area */
+    textarea {
+      width: 100%;
+      height: 100px;
+      background: var(--card-sub);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      resize: none;
+      outline: none;
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-around;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+      z-index: 100;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .nav-btn.active {
+      color: var(--accent);
+    }
+
+    .nav-btn span.icon {
+      font-size: 1.25rem;
+    }
+
+    .view-section {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .view-section.active {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header Banner -->
+    <header class="header-card">
+      <div class="header-info">
+        <h1><span>👋</span> Welcome, Thanish</h1>
+        <p id="live-clock">Loading clock...</p>
+      </div>
+      <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌙</button>
+    </header>
+
+    <!-- TAB 1: DASHBOARD -->
+    <section id="tab-dashboard" class="view-section active">
+      <!-- Quick Progress -->
+      <div class="card">
+        <div class="card-title">🎯 Goal Progress</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="goal-progress-bar"></div>
+        </div>
+        <div class="item-row" onclick="toggleGoal(0)">
+          <span id="goal-0-text">🚀 Complete Semester Syllabus</span>
+          <span id="goal-0-status">⏳ In Progress</span>
+        </div>
+        <div class="item-row" onclick="toggleGoal(1)">
+          <span id="goal-1-text">💻 Master Web Development</span>
+          <span id="goal-1-status">⏳ In Progress</span>
+        </div>
+      </div>
+
+      <!-- Quick Schedule -->
+      <div class="card">
+        <div class="card-title">📅 Today's Routine</div>
+        <div class="item-row"><span>🌅 Morning</span><strong>Get ready & routine</strong></div>
+        <div class="item-row"><span>🎓 College</span><strong>Lectures & Labs</strong></div>
+        <div class="item-row"><span>📚 Evening</span><strong>Study & Homework</strong></div>
+        <div class="item-row"><span>💻 Night</span><strong>Coding / Projects</strong></div>
+      </div>
+    </section>
+
+    <!-- TAB 2: STUDY PLANNER -->
+    <section id="tab-study" class="view-section">
+      <div class="card">
+        <div class="card-title">📚 Study Timetable</div>
+        <div class="item-row"><span>⚡ Physics</span><strong>1 hour</strong></div>
+        <div class="item-row"><span>📐 Mathematics</span><strong>1 hour</strong></div>
+        <div class="item-row"><span>🧪 Chemistry</span><strong>1 hour</strong></div>
+        <div class="item-row"><span>📝 Revision & Practice</span><strong>30 mins</strong></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: TO-DO LIST -->
+    <section id="tab-todos" class="view-section">
+      <div class="card">
+        <div class="card-title">✅ Daily Tasks</div>
+        <div class="input-group">
+          <input type="text" id="todo-input" placeholder="Add a new task..." onkeydown="if(event.key==='Enter') addTodo()" />
+          <button class="primary-btn" onclick="addTodo()">Add</button>
+        </div>
+        <div id="todo-list"></div>
+      </div>
+    </section>
+
+    <!-- TAB 4: QUICK NOTES -->
+    <section id="tab-notes" class="view-section">
+      <div class="card">
+        <div class="card-title">📝 Scratchpad & Notes</div>
+        <textarea id="quick-notes" placeholder="Jot down quick thoughts, formulas, or reminders... (Auto-saves)" oninput="saveNotes()"></textarea>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="switchTab('tab-dashboard', this)"><span class="icon">🏠</span>Home</button>
+    <button class="nav-btn" onclick="switchTab('tab-study', this)"><span class="icon">📚</span>Study</button>
+    <button class="nav-btn" onclick="switchTab('tab-todos', this)"><span class="icon">✅</span>Tasks</button>
+    <button class="nav-btn" onclick="switchTab('tab-notes', this)"><span class="icon">📝</span>Notes</button>
+  </nav>
+
+  <script>
+    // Live Clock & Date
+    function updateClock() {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-GB');
+      const timeStr = now.toLocaleTimeString('en-GB');
+      document.getElementById('live-clock').innerText = `${dateStr} • ${timeStr}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Theme Toggle
+    function initTheme() {
+      const savedTheme = localStorage.getItem('dash_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.getElementById('theme-btn').innerText = savedTheme === 'dark' ? '🌙' : '☀️';
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('dash_theme', next);
+      document.getElementById('theme-btn').innerText = next === 'dark' ? '🌙' : '☀️';
+    }
+
+    // Navigation Switcher
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // To-Do List with LocalStorage
+    let todos = JSON.parse(localStorage.getItem('dash_todos') || '[]');
+
+    function renderTodos() {
+      const list = document.getElementById('todo-list');
+      list.innerHTML = '';
+      if (todos.length === 0) {
+        list.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;text-align:center;padding:8px;">No tasks yet. Add one above!</p>';
+        return;
+      }
+      todos.forEach((todo, idx) => {
+        const item = document.createElement('div');
+        item.className = 'item-row';
+        item.innerHTML = `
+          <div class="todo-item ${todo.done ? 'done' : ''}">
+            <input type="checkbox" ${todo.done ? 'checked' : ''} onchange="toggleTodo(${idx})">
+            <span>${todo.text}</span>
+          </div>
+          <button class="delete-btn" onclick="deleteTodo(${idx})">✕</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function addTodo() {
+      const input = document.getElementById('todo-input');
+      const text = input.value.trim();
+      if (!text) return;
+      todos.push({ text, done: false });
+      localStorage.setItem('dash_todos', JSON.stringify(todos));
+      input.value = '';
+      renderTodos();
+    }
+
+    function toggleTodo(idx) {
+      todos[idx].done = !todos[idx].done;
+      localStorage.setItem('dash_todos', JSON.stringify(todos));
+      renderTodos();
+    }
+
+    function deleteTodo(idx) {
+      todos.splice(idx, 1);
+      localStorage.setItem('dash_todos', JSON.stringify(todos));
+      renderTodos();
+    }
+
+    // Goal Toggle & Progress
+    let goals = JSON.parse(localStorage.getItem('dash_goals') || '[false, false]');
+
+    function updateGoalUI() {
+      let completedCount = 0;
+      goals.forEach((done, i) => {
+        const status = document.getElementById(`goal-${i}-status`);
+        if (status) {
+          status.innerText = done ? '✅ Done' : '⏳ In Progress';
+          if (done) completedCount++;
+        }
+      });
+      const pct = (completedCount / goals.length) * 100;
+      document.getElementById('goal-progress-bar').style.width = `${pct}%`;
+    }
+
+    function toggleGoal(index) {
+      goals[index] = !goals[index];
+      localStorage.setItem('dash_goals', JSON.stringify(goals));
+      updateGoalUI();
+    }
+
+    // Notes auto-save
+    function initNotes() {
+      document.getElementById('quick-notes').value = localStorage.getItem('dash_notes') || '';
+    }
+
+    function saveNotes() {
+      const val = document.getElementById('quick-notes').value;
+      localStorage.setItem('dash_notes', val);
+    }
+
+    // App Init
+    initTheme();
+    renderTodos();
+    initNotes();
+    updateGoalUI();
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
